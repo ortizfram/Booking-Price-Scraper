@@ -5,7 +5,8 @@ from selenium.webdriver.support import expected_conditions as EC
 
 # Define the list of hotel names to search for
 '''~ put it in an external file to then import it here and use it as a variable'''
-hotel_names = ['Hotel Mendoza', 'Soltigua Apart Hotel Mendoza', 'Uvas Apart Hotel', 'Fuente Mayor Hotel Ciudad de Mendoza', 'Apart San Lorenzo','HOTEL ROYAL PRINCESSS', 'Cóndor Suites Apart Hotel', 'Montañas Azules Apart Hotel', 'Hotel Raices Aconcagua', 'Hotel Carollo']
+names_path = pd.read_csv('competitors_names.csv')
+hotel_names = names_path
 
 # Set up Selenium web driver
 driver = webdriver.Chrome()
