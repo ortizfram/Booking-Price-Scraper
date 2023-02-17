@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -13,8 +14,12 @@ hotel_names = names_path['competitors_names']
 driver = webdriver.Chrome()
 
 # Loop through each hotel name and extract its name and price for different occupancies
-for name in hotel_names:
+for name in hotel_names:1
     for occupancy in [2, 3, 4, 5, 6]:
+        # Define the check in and out dates for the link constructor
+        checkin_date = datetime.now().strftime("%Y-%m-%d")
+        checkout_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+
         # Construct the URL for the hotel page on Booking.com
         url = f'https://www.booking.com/searchresults.en-gb.html?ss={name}&group_adults={occupancy}'
 
@@ -22,7 +27,7 @@ for name in hotel_names:
         driver.get(url)
 
         # Wait for the hotel listings to load
-        WebDriverWait(driver, 10).until(
+        WebDriverWait(driver, 17).until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="hotellist_inner"]/div[1]'))
         )
 
