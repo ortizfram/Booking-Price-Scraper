@@ -1,3 +1,4 @@
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -6,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # Define the list of hotel names to search for
 '''~ put it in an external file to then import it here and use it as a variable'''
 names_path = pd.read_csv('competitors_names.csv')
-hotel_names = names_path
+hotel_names = names_path['competitors_names']
 
 # Set up Selenium web driver
 driver = webdriver.Chrome()
@@ -22,8 +23,7 @@ for name in hotel_names:
 
         # Wait for the hotel listings to load
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[2]/div/div[2]/div[2]/ul/li/div/div/div/div[1]'))
-
+            EC.presence_of_element_located((By.XPATH, '//*[@id="hotellist_inner"]/div[1]'))
         )
 
         # Find the first hotel listing on the page
