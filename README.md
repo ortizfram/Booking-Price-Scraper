@@ -3,5 +3,5 @@
 
 # How to use it
 - download to desktop <a href="https://github.com/ortizfram/Booking-Price-Scraper/blob/main/script.py" title="Download" download>Download</a>
-- change competition Names ()
-- run the script
+- open competitors names csv file and edit with the exact names you want the price and occupancy of 
+- save, run the script
