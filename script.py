@@ -21,7 +21,7 @@ for name in hotel_names:1
         checkout_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
 
         # Construct the URL for the hotel page on Booking.com
-        url = f'https://www.booking.com/searchresults.en-gb.html?ss={name}&group_adults={occupancy}'
+        url = f'https://www.booking.com/searchresults.en-gb.html?checkin={checkin_date}&checkout={checkout_date}&ss={name}&group_adults={occupancy}'
 
         # Load the URL in the web driver
         driver.get(url)
