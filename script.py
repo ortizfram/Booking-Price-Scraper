@@ -10,36 +10,42 @@ from datetime import datetime, timedelta
 names_path = pd.read_csv('competitors_names.csv')
 hotel_names = names_path['competitors_names']
 
-# Set up Selenium web driver
-driver = webdriver.Chrome()
+# Create a new text file to store the results
+with open('search_results.txt', 'w') as f:
 
-# Loop through each hotel name and extract its name and price for different occupancies
-for name in hotel_names:
-    for occupancy in [2, 3, 4, 5, 6]:
-        # Define the check in and out dates
-        checkin_date = datetime.now().strftime("%Y-%m-%d")
-        checkout_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+    # Set up Selenium web driver
+    driver = webdriver.Chrome()
 
-        # Construct the URL for the hotel page on Booking.com
-        url = f'https://www.booking.com/searchresults.en-gb.html?checkin={checkin_date}&checkout={checkout_date}&ss={name}&group_adults={occupancy}'
+    # Loop through each hotel name and extract its name and price for different occupancies
+    for name in hotel_names:
+        for occupancy in [2, 3, 4, 5, 6]:
+            # Define the check in and out dates
+            checkin_date = datetime.now().strftime("%Y-%m-%d")
+            checkout_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
 
-        # Load the URL in the web driver
-        driver.get(url)
+            # Construct the URL for the hotel page on Booking.com
+            url = f'https://www.booking.com/searchresults.en-gb.html?checkin={checkin_date}&checkout={checkout_date}&ss={name}&group_adults={occupancy}'
 
-        # Wait for the hotel listings to load
-        WebDriverWait(driver, 17).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="hotellist_inner"]/div[1]'))
-        )
+            # Load the URL in the web driver
+            driver.get(url)
 
-        # Find the first hotel listing on the page
-        hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]/div[1]')
+            # Wait for the hotel listings to load
+            WebDriverWait(driver, 17).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="hotellist_inner"]/div[1]'))
+            )
 
-        # Extract the name and price of the hotel
-        hotel_name = hotel_listing.find_element_by_class_name('sr-hotel__name').text.strip()
-        hotel_price = hotel_listing.find_element_by_class_name('bui-price-display__value').text.strip()
+            # Find the first hotel listing on the page
+            hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]/div[1]')
 
-        # Print the name, price and occupancy of the hotel
-        print(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}')
+            # Extract the name and price of the hotel
+            hotel_name = hotel_listing.find_element_by_class_name('sr-hotel__name').text.strip()
+            hotel_price = hotel_listing.find_element_by_class_name('bui-price-display__value').text.strip()
 
-# Quit the web driver
-driver.quit()
+            # Print the name, price and occupancy of the hotel
+            print(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}')
+
+            # Write the search results to the file
+            f.write(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}\n')
+
+    # Quit the web driver
+    driver.quit()
