@@ -3,5 +3,5 @@
 
 # How to use it
 - download to desktop <a href="https://github.com/ortizfram/Booking-Price-Scraper/blob/main/script.py" title="Download" download>Download</a>
-- change competition Names
+- change competition Names ()
 - run the script
