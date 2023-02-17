@@ -19,15 +19,15 @@ for name in hotel_names:
 
     # Wait for the hotel listings to load
     WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "sr_item_content"))
+        EC.presence_of_element_located((By.XPATH, "//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[2]/div/div[2]/div[2]/ul/li/div/div/div/div[1]"))
     )
 
     # Find the first hotel listing on the page
-    hotel_listing = driver.find_element_by_class_name('sr_item_content')
+    hotel_listing = driver.find_element_by_xpath('//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[2]/div/div[2]/div[2]/ul/li/div')
 
     # Extract the name and price of the hotel
-    hotel_name = hotel_listing.find_element_by_class_name('sr-hotel__name').text.strip()
-    hotel_price = hotel_listing.find_element_by_class_name('bui-price-display__value').text.strip()
+    hotel_name = hotel_listing.find_element_by_xpath('//*[@id="search_results_table"]/div[2]/div/div/div[3]/div[3]/div[1]/div[2]/div/div[1]/div/div[1]/div/div[1]/div/h3/a/div[1]').text.strip()
+    hotel_price = hotel_listing.find_element_by_xpath('//*[@id="search_results_table"]/div[2]/div/div/div[3]/div[3]/div[1]/div[2]/div/div[2]/div[2]/div/div[1]/span/div/span[2]').text.strip()
 
     # Print the name and price of the hotel
     print(f'Name: {hotel_name} | Price: {hotel_price}')
