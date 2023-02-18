@@ -43,7 +43,7 @@ for name in hotel_names:
             continue
 
     # Write the search results to a file
-    with open(f'{name}_search_results.txt', 'w') as f:
+    with open(f'{name}_search_results.txt', 'x') as f:
         for result in search_results:
             f.write(f'Name: {result[0]} | Occupancy: {result[1]} | Price: {result[2]}\n')
 
