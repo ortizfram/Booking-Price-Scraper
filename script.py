@@ -26,6 +26,14 @@ for name in hotel_names:
         driver.get(url)
 
         try:
+            # Wait for the search button to become clickable to simulate human interaction
+            search_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "frm"))
+            )
+            
+            # Click the search button to initiate the search
+            search_button.click()
+            
             # Find the first hotel listing on the page
             hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]/div[1]')
 
