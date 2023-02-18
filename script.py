@@ -26,7 +26,9 @@ for name in hotel_names:
         driver.get(url)
 
         # Press search buttom
-        driver.find_element_by_class_name('sb-searchbox__button').click()
+        '''has top change it so it works to then extract'''
+        driver.find_element_by_css_selector('.sb-searchbox__button').click()
+
 
         try:
             # Find the first hotel listing on the page
