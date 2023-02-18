@@ -1,6 +1,11 @@
 import pandas as pd
-from selenium import webdriver
 from datetime import datetime, timedelta
+from selenium import webdriver
+
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
 
 # Define the list of hotel names to search for
 names_path = pd.read_csv('competitors_names.csv')
@@ -33,7 +38,7 @@ for name in hotel_names:
             
             # Click the search button to initiate the search
             search_button.click()
-            
+
             # Find the first hotel listing on the page
             hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]/div[1]')
 
