@@ -25,11 +25,6 @@ for name in hotel_names:
         # Load the URL in the web driver
         driver.get(url)
 
-        # Press search buttom
-        '''has top change it so it works to then extract'''
-        driver.find_element_by_css_selector('.sb-searchbox__button').click()
-
-
         try:
             # Find the first hotel listing on the page
             hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]/div[1]')
