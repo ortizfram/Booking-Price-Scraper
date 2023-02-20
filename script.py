@@ -1,11 +1,9 @@
 import pandas as pd
 from datetime import datetime, timedelta
 from selenium import webdriver
-
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-
 
 # Define the list of hotel names to search for
 names_path = pd.read_csv('competitors_names.csv')
@@ -32,15 +30,13 @@ for name in hotel_names:
 
         try:
             # Wait for the search button to become clickable to simulate human interaction
-            search_button = WebDriverWait(driver, 0.7).until(
-                EC.element_to_be_clickable((By.ID, "frm"))
-            )
-            
+            search_button = WebDriverWait(driver, 0.56).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[6]/div/button')))
+
             # Click the search button to initiate the search
             search_button.click()
 
             # Find the first hotel listing on the page
-            hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]/div[1]')
+            hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]')
 
             # Extract the name and price of the hotel
             hotel_name = hotel_listing.find_element_by_class_name('sr-hotel__name').text.strip()
@@ -52,11 +48,11 @@ for name in hotel_names:
             # Add the search results to the list
             search_results.append([hotel_name, occupancy, hotel_price])
         except:
-            # If the price is not found, skip to the next one
+            # If the hotel is not found, skip to the next occupancy
             continue
 
     # Write the search results to a file
-    with open(f'{name}_search_results.txt', 'a') as f:
+    with open(f'{name}_search_results.txt', 'w') as f:
         for result in search_results:
             f.write(f'Name: {result[0]} | Occupancy: {result[1]} | Price: {result[2]}\n')
 
