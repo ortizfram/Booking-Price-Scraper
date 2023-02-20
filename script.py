@@ -42,7 +42,15 @@ for name in hotel_names:
         search_bar.send_keys(Keys.RETURN)
 #-----------------------------------------------------------------
 # ADD check in out dates, and occupancy
+# Choose in calendar IN/OUT
 
+# Find and click on date box
+box = driver.find_element(By.XPATH, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[3]/div[2]/div/button[1]')
+box.click()
+# IN
+
+# Find and click on date box
+# OUT
 #-----------------------------------------------------------------
         try:
             # Wait for the search results to appear
