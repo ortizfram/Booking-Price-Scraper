@@ -40,8 +40,8 @@ for name in hotel_names:
             hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]')
 
             # Extract the name and price of the hotel
-            hotel_name = hotel_listing.find_element_by_class_name('sr-hotel__name').text.strip()
-            hotel_price = hotel_listing.find_element_by_class_name('bui-price-display__value').text.strip()
+            hotel_name = hotel_listing.find_element_by_xpath('//*[@id="search_results_table"]/div[2]/div/div/div[3]/div[3]/div[1]/div[2]/div/div[1]/div/div[1]/div/div[1]/div/h3/a/div[1]').text.strip()
+            hotel_price = hotel_listing.find_element_by_xpath('//*[@id="search_results_table"]/div[2]/div/div/div[3]/div[3]/div[1]/div[2]/div/div[2]/div[2]/div/div[1]/span/div/span[2]').text.strip()
 
             # Print the name, price and occupancy of the hotel
             print(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}')
