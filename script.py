@@ -8,7 +8,7 @@ from selenium.webdriver.support.expected_conditions import presence_of_element_l
 
 
 # Define the list of hotel names to search for
-names_path = pd.read_csv('competitors_for_test.csv')
+names_path = pd.read_csv('competitors_test.csv')
 hotel_names = names_path['competitors_names']
 
 # Set up Selenium web driver
@@ -25,7 +25,7 @@ for name in hotel_names:
     for occupancy in [2, 3]:
         # Define the check in and out dates
         checkin_date = (pd.Timestamp.now() + pd.Timedelta('1D')).strftime('%Y-%m-%d')
-        checkout_date = (pd.Timestamp.now() + pd.Timedelta('2D')).strftime('%Y-%m-%d')
+
 
         # Construct the URL for the hotel page on Booking.com
         url = 'https://www.booking.com'
@@ -41,56 +41,56 @@ for name in hotel_names:
         # Send the Enter key to execute the search
         search_bar.send_keys(Keys.RETURN)
 #-----------------------------------------------------------------
-# ADD check in out dates, and occupancy
-# Choose in calendar IN/OUT
+        # ADD CHECK IN/OUT DATES NAD OCCUPACY
+        # Choose in calendar IN/OUT
 
-# Find and click on date box
-box = driver.find_element(By.XPATH, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[3]/div[2]/div/button[1]')
-box.click()
-# Wait for the slider calendar to appear
-slider_calendar = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.CXPATH, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[3]/div[2]/div[2]/div/div'))
-)
-# IN
-# how? to convert 
-'''
-# Split the checkin date into day, month, and year
-    day, month, year = checkin_date.split("-")
-    
-    # Find the slider handle for the month and move it to the correct position
-    month_slider = slider_calendar.find_element(By.CSS_SELECTOR, 'div.month-slider-handle')
-    month_slider_offset = int(month) - 1
-    slider_width = slider_calendar.find_element(By.CSS_SELECTOR, 'div.month-slider-track').size['width']
-    handle_width = month_slider.size['width']
-    slider_range = slider_width - handle_width
-    offset = slider_range / 11 * month_slider_offset
-    ActionChains(driver).drag_and_drop_by_offset(month_slider, offset, 0).perform()'''
-# Find and click on date box
-# Wait for the slider calendar to appear
-slider_calendar = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.CSS_SELECTOR, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[3]/div[2]/div[2]/div/div'))
-)
-# OUT
-#-----------------------------------------------------------------
-        try:
-            # Wait for the search results to appear
-            hotel_listings = wait.until(presence_of_element_located((By.XPATH, "//div[@id='hotellist_inner']/div")))
+        # Split checkin_date into year, month, and day components
+        year, month, day = checkin_date.split('-')
 
-            # Find the first hotel listing on the page
-            hotel_listing = hotel_listings.find_element_by_xpath("./*[contains(@class, 'sr_item')][1]")
+        # IN ////---
 
-            # Extract the name and price of the hotel
-            hotel_name = hotel_listing.find_element_by_xpath(".//span[contains(@class, 'sr-hotel__name')]").text.strip()
-            hotel_price = hotel_listing.find_element_by_xpath(".//div[contains(@class, 'bui-price-display__value')]").text.strip()
 
-            # Print the name, price and occupancy of the hotel
-            print(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}')
+        # Find and click on the check-in date box
+        checkin_box = wait.until(presence_of_element_located((By.XPATH, '//*[@id="frm"]/div[1]/div[2]/div[1]/div[2]/div/div')))
+        checkin_box.click()
 
-            # Add the search results to the list
-            all_results.append([name, occupancy, hotel_name, hotel_price])
-        except:
-            # If the hotel is not found, skip to the next occupancy
-            continue
+        # Select the check-in date by clicking on the corresponding day element in the calendar
+        checkin_day_element = wait.until(presence_of_element_located((By.XPATH, f'//*[@id="frm"]/div[1]/div[2]/div[2]/div/div/div[1]/table/tbody/tr/td[@data-date="{year}-{month}-{day}"]')))                                                   
+        checkin_day_element.click()
+
+        # OUT ////---
+
+
+        # Find and click on the check-out date box
+        checkout_box = wait.until(presence_of_element_located((By.XPATH, '//*[@id="frm"]/div[1]/div[2]/div[1]/div[3]/div/div')))
+        checkout_box.click()
+
+        # Select the check-out date by clicking on the corresponding day element in the calendar
+        checkout_day_element = wait.until(presence_of_element_located((By.XPATH, f'//*[@id="frm"]/div[1]/div[2]/div[2]/div/div/div[2]/table/tbody/tr/td[@data-date="{year}-{month}-{int(day)+1}"]')))
+        checkout_day_element.click()
+
+        #-----------------------------------------------------------------
+        """might have to add a search buttom pressed here"""
+
+        #---------------------------------------------------------------
+        # SELECTING AND SCRAPING DATA
+
+        # Wait for the search results to appear
+        hotel_listings = wait.until(presence_of_element_located((By.XPATH, "//div[@id='hotellist_inner']/div")))
+
+        # Find the first hotel listing on the page
+        hotel_listing = hotel_listings.find_element_by_xpath("./*[contains(@class, 'sr_item')][1]")
+
+        # Extract the name and price of the hotel
+        hotel_name = hotel_listing.find_element_by_xpath(".//span[contains(@class, 'sr-hotel__name')]").text.strip()
+        hotel_price = hotel_listing.find_element_by_xpath(".//div[contains(@class, 'bui-price-display__value')]").text.strip()
+
+        # Print the name, price and occupancy of the hotel
+        print(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}')
+
+# Add the search results to the list
+all_results.append([name, occupancy, hotel_name, hotel_price])
+
 
 # Write all search results to a single file
 with open('search_results.txt', 'w') as f:
