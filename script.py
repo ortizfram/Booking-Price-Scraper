@@ -15,7 +15,7 @@ hotel_names = names_path['competitors_names']
 driver = webdriver.Chrome()
 
 # Set up an explicit wait for locating the search results
-wait = WebDriverWait(driver, 10)
+wait = WebDriverWait(driver, 15)
 
 # Create a list to store all search results
 all_results = []
@@ -40,7 +40,10 @@ for name in hotel_names:
 
         # Send the Enter key to execute the search
         search_bar.send_keys(Keys.RETURN)
+#-----------------------------------------------------------------
+# ADD check in out dates, and occupancy
 
+#-----------------------------------------------------------------
         try:
             # Wait for the search results to appear
             hotel_listings = wait.until(presence_of_element_located((By.XPATH, "//div[@id='hotellist_inner']/div")))
