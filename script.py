@@ -1,9 +1,11 @@
 import pandas as pd
-from datetime import datetime, timedelta
+import time
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.expected_conditions import presence_of_element_located
+
 
 # Define the list of hotel names to search for
 names_path = pd.read_csv('competitors_for_test.csv')
@@ -12,6 +14,9 @@ hotel_names = names_path['competitors_names']
 # Set up Selenium web driver
 driver = webdriver.Chrome()
 
+# Set up an explicit wait for locating the search results
+wait = WebDriverWait(driver, 10)
+
 # Create a list to store all search results
 all_results = []
 
@@ -19,29 +24,33 @@ all_results = []
 for name in hotel_names:
     for occupancy in [2, 3]:
         # Define the check in and out dates
-        checkin_date = datetime.now().strftime("%Y-%m-%d")
-        checkout_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+        checkin_date = (pd.Timestamp.now() + pd.Timedelta('1D')).strftime('%Y-%m-%d')
+        checkout_date = (pd.Timestamp.now() + pd.Timedelta('2D')).strftime('%Y-%m-%d')
 
         # Construct the URL for the hotel page on Booking.com
-        url = f'https://www.booking.com/searchresults.en-gb.html?ss={name}&ssne={name}&ssne_untouched={name}&sb=1&src_elem=sb&src=searchresults&dest_type=hotel&checkin={checkin_date}&checkout={checkout_date}&group_adults={occupancy}&no_rooms=1&group_children=0&sb_travel_purpose=leisure'
-
-        # Load the URL in the web driver
+        url = 'https://www.booking.com'
         driver.get(url)
-        # add waiting time so elements charge
-        driver.implicitly_wait(10)
+
+        # Find the search bar element and send the hotel name
+        search_bar = wait.until(presence_of_element_located((By.XPATH, "//input[@type='search']")))
+        search_bar.send_keys(name)
+
+        # Wait for a bit to allow the search results to appear
+        time.sleep(1)
+
+        # Send the Enter key to execute the search
+        search_bar.send_keys(Keys.RETURN)
 
         try:
-            # Wait for the search button to become clickable to simulate human interaction
-            button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="searchbox_btn"]')))
-
-            button.click()
+            # Wait for the search results to appear
+            hotel_listings = wait.until(presence_of_element_located((By.XPATH, "//div[@id='hotellist_inner']/div")))
 
             # Find the first hotel listing on the page
-            hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]')
+            hotel_listing = hotel_listings.find_element_by_xpath("./*[contains(@class, 'sr_item')][1]")
 
             # Extract the name and price of the hotel
-            hotel_name = hotel_listing.find_element_by_xpath('//*[@id="search_results_table"]/div[2]/div/div/div[3]/div[3]/div[1]/div[2]/div/div[1]/div/div[1]/div/div[1]/div/h3/a/div[1]').text.strip()
-            hotel_price = hotel_listing.find_element_by_xpath('//*[@id="search_results_table"]/div[2]/div/div/div[3]/div[3]/div[1]/div[2]/div/div[2]/div[2]/div/div[1]/span/div/span[2]').text.strip()
+            hotel_name = hotel_listing.find_element_by_xpath(".//span[contains(@class, 'sr-hotel__name')]").text.strip()
+            hotel_price = hotel_listing.find_element_by_xpath(".//div[contains(@class, 'bui-price-display__value')]").text.strip()
 
             # Print the name, price and occupancy of the hotel
             print(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}')
