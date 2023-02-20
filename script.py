@@ -12,30 +12,29 @@ hotel_names = names_path['competitors_names']
 # Set up Selenium web driver
 driver = webdriver.Chrome()
 
+# Create a list to store all search results
+all_results = []
+
 # Loop through each hotel name and extract its name and price for different occupancies
 for name in hotel_names:
-    # Create a list to store the search results
-    search_results = []
-
-    for occupancy in [2, 3, 4, 5, 6]:
+    for occupancy in [2, 3]:
         # Define the check in and out dates
         checkin_date = datetime.now().strftime("%Y-%m-%d")
         checkout_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
 
         # Construct the URL for the hotel page on Booking.com
-        url = f'https://www.booking.com/searchresults.en-gb.html?checkin={checkin_date}&checkout={checkout_date}&ss={name}&group_adults={occupancy}&sb=1&src=searchresults' #sb=1 is buttom search already pressed
-        # src=searchresults : results should be displayd in the page
-        # sb=1 : already pressed search buttom
+        url = f'https://www.booking.com/searchresults.en-gb.html?ss={name}&checkin={checkin_date}&checkout={checkout_date}&group_adults={occupancy}&ssne_untouched={name}&src_elem=sb&src=searchresults'
 
         # Load the URL in the web driver
         driver.get(url)
+        # add waiting time so elements charge
+        driver.implicitly_wait(10)
 
         try:
             # Wait for the search button to become clickable to simulate human interaction
-            search_button = WebDriverWait(driver, 0.56).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[6]/div/button')))
+            button = driver.find_element_by_xpath('//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[6]/div/button')
 
-            # Click the search button to initiate the search
-            search_button.click()
+            button.click()
 
             # Find the first hotel listing on the page
             hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]')
@@ -48,7 +47,7 @@ for name in hotel_names:
             print(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}')
 
             # Add the search results to the list
-            search_results.append([hotel_name, occupancy, hotel_price])
+            all_results.append([name, occupancy, hotel_name, hotel_price])
         except:
             # If the hotel is not found, skip to the next occupancy
             continue
