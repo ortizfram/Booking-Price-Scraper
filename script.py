@@ -47,9 +47,17 @@ for name in hotel_names:
 # Find and click on date box
 box = driver.find_element(By.XPATH, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[3]/div[2]/div/button[1]')
 box.click()
+# Wait for the slider calendar to appear
+slider_calendar = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.CXPATH, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[3]/div[2]/div[2]/div/div'))
+)
 # IN
 
 # Find and click on date box
+# Wait for the slider calendar to appear
+slider_calendar = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.CSS_SELECTOR, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[3]/div[2]/div[2]/div/div'))
+)
 # OUT
 #-----------------------------------------------------------------
         try:
