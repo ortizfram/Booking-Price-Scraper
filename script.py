@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 # Define the list of hotel names to search for
-names_path = pd.read_csv('competitors_names.csv')
+names_path = pd.read_csv('competitors_for_test.csv')
 hotel_names = names_path['competitors_names']
 
 # Set up Selenium web driver
@@ -23,7 +23,9 @@ for name in hotel_names:
         checkout_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
 
         # Construct the URL for the hotel page on Booking.com
-        url = f'https://www.booking.com/searchresults.en-gb.html?checkin={checkin_date}&checkout={checkout_date}&ss={name}&group_adults={occupancy}'
+        url = f'https://www.booking.com/searchresults.en-gb.html?checkin={checkin_date}&checkout={checkout_date}&ss={name}&group_adults={occupancy}&sb=1&src=searchresults' #sb=1 is buttom search already pressed
+        # src=searchresults : results should be displayd in the page
+        # sb=1 : already pressed search buttom
 
         # Load the URL in the web driver
         driver.get(url)
@@ -50,7 +52,7 @@ for name in hotel_names:
         except:
             # If the hotel is not found, skip to the next occupancy
             continue
-        
+
 # Write all search results to a single file
 with open('search_results.txt', 'w') as f:
     for result in all_results:
