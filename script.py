@@ -50,15 +50,15 @@ for name in hotel_names:
         except:
             # If the hotel is not found, skip to the next occupancy
             continue
+        
+# Write all search results to a single file
+with open('search_results.txt', 'w') as f:
+    for result in all_results:
+        f.write(f'Hotel: {result[0]} | Occupancy: {result[1]} | Name: {result[2]} | Price: {result[3]}\n')
 
-    # Write the search results to a file
-    with open(f'{name}_search_results.txt', 'w') as f:
-        for result in search_results:
-            f.write(f'Name: {result[0]} | Occupancy: {result[1]} | Price: {result[2]}\n')
-
-    # Open the file to show the search results
-    with open(f'{name}_search_results.txt', 'r') as f:
-        print(f.read())
+# Open the file to show the search results
+with open('search_results.txt', 'r') as f:
+    print(f.read())
 
 # Quit the web driver
 driver.quit()
