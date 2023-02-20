@@ -32,71 +32,7 @@ for name in hotel_names:
 
         try:
             # Wait for the search button to become clickable to simulate human interaction
-            import pandas as pd
-from datetime import datetime, timedelta
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-
-# Define the list of hotel names to search for
-names_path = pd.read_csv('competitors_for_test.csv')
-hotel_names = names_path['competitors_names']
-
-# Set up Selenium web driver
-driver = webdriver.Chrome()
-
-# Create a list to store all search results
-all_results = []
-
-# Loop through each hotel name and extract its name and price for different occupancies
-for name in hotel_names:
-    for occupancy in [2, 3]:
-        # Define the check in and out dates
-        checkin_date = datetime.now().strftime("%Y-%m-%d")
-        checkout_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
-
-        # Construct the URL for the hotel page on Booking.com
-        url = f'https://www.booking.com/searchresults.en-gb.html?ss={name}&ssne={name}&ssne_untouched={name}&sb=1&src_elem=sb&src=searchresults&dest_type=hotel&checkin={checkin_date}&checkout={checkout_date}&group_adults={occupancy}&no_rooms=1&group_children=0&sb_travel_purpose=leisure'
-
-        # Load the URL in the web driver
-        driver.get(url)
-        # Add waiting time so elements charge
-        driver.implicitly_wait(10)
-
-        try:
-            # Wait for the search button to become clickable to simulate human interaction. if not data doe not appear
             button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="searchbox_btn"]')))
-            button.click()
-
-            # Find the first hotel listing on the page
-            hotel_listing = driver.find_element_by_xpath('//*[@id="hotellist_inner"]/div[1]')
-
-            # Extract the name and price of the hotel
-            hotel_name = hotel_listing.find_element_by_xpath('.//h3/a/span[1]').text.strip()
-            hotel_price = hotel_listing.find_element_by_xpath('.//div[contains(@class, "bui-price-display__value")]/text()').text
-
-            # Print the name, price and occupancy of the hotel
-            print(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}')
-
-            # Add the search results to the list
-            all_results.append([name, occupancy, hotel_name, hotel_price])
-        except:
-            # If the hotel is not found, skip to the next occupancy
-            continue
-
-# Write all search results to a single file
-with open('search_results.txt', 'w') as f:
-    for result in all_results:
-        f.write(f'Hotel: {result[0]} | Occupancy: {result[1]} | Name: {result[2]} | Price: {result[3]}\n')
-
-# Open the file to show the search results
-with open('search_results.txt', 'r') as f:
-    print(f.read())
-
-# Quit the web driver
-driver.quit()
-
 
             button.click()
 
