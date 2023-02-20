@@ -52,7 +52,19 @@ slider_calendar = WebDriverWait(driver, 10).until(
     EC.presence_of_element_located((By.CXPATH, '//*[@id="left_col_wrapper"]/div[1]/div/form/div/div[3]/div[2]/div[2]/div/div'))
 )
 # IN
-
+# how? to convert 
+'''
+# Split the checkin date into day, month, and year
+    day, month, year = checkin_date.split("-")
+    
+    # Find the slider handle for the month and move it to the correct position
+    month_slider = slider_calendar.find_element(By.CSS_SELECTOR, 'div.month-slider-handle')
+    month_slider_offset = int(month) - 1
+    slider_width = slider_calendar.find_element(By.CSS_SELECTOR, 'div.month-slider-track').size['width']
+    handle_width = month_slider.size['width']
+    slider_range = slider_width - handle_width
+    offset = slider_range / 11 * month_slider_offset
+    ActionChains(driver).drag_and_drop_by_offset(month_slider, offset, 0).perform()'''
 # Find and click on date box
 # Wait for the slider calendar to appear
 slider_calendar = WebDriverWait(driver, 10).until(
