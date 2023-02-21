@@ -14,3 +14,9 @@ page2= requests.get(url_2pax)
 # Initialize html parser page2
 soup = BeautifulSoup(page2.content, 'html.parser')
 lists = soup.find_all('div', class_="a826ba81c4 fe821aea6c fa2f36ad22 afd256fc79 d08f526e0d ed11e24d01 ef9845d4b3 da89aeb942") # property-card
+
+for list in lists:
+        title = lists.find('a', class_="fcab3ed991 a23c043802") #title in every section 
+        price = lists.find('span', class_="fcab3ed991 fbd1d3018c e729ed5ab6") #price in every section
+        info = [title, price]
+        print(info)
