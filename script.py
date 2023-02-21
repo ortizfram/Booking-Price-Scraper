@@ -11,5 +11,6 @@ page2= requests.get(url_2pax)
 # url5=
 # url6=
 
+# Initialize html parser page2
 soup = BeautifulSoup(page2.content, 'html.parser')
-print(soup)
+lists = soup.find_all('div', class_="a826ba81c4 fe821aea6c fa2f36ad22 afd256fc79 d08f526e0d ed11e24d01 ef9845d4b3 da89aeb942") # property-card
