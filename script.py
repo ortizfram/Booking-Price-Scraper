@@ -40,15 +40,12 @@ for name in hotel_names:
 
         # Send the Enter key to execute the search
         search_bar.send_keys(Keys.RETURN)
-#-----------------------------------------------------------------
-        # ADD CHECK IN/OUT DATES NAD OCCUPACY
-        # Choose in calendar IN/OUT
+
+        # ADD CHECK IN/OUT DATES AND OCCUPANCY
+        # Choose check-in date
 
         # Split checkin_date into year, month, and day components
         year, month, day = checkin_date.split('-')
-
-        # IN ////---
-
 
         # Find and click on the check-in date box
         checkin_box = wait.until(presence_of_element_located((By.XPATH, '//*[@id="frm"]/div[1]/div[2]/div[1]/div[2]/div/div')))
@@ -58,8 +55,7 @@ for name in hotel_names:
         checkin_day_element = wait.until(presence_of_element_located((By.XPATH, f'//*[@id="frm"]/div[1]/div[2]/div[2]/div/div/div[1]/table/tbody/tr/td[@data-date="{year}-{month}-{day}"]')))                                                   
         checkin_day_element.click()
 
-        # OUT ////---
-
+        # Choose check-out date
 
         # Find and click on the check-out date box
         checkout_box = wait.until(presence_of_element_located((By.XPATH, '//*[@id="frm"]/div[1]/div[2]/div[1]/div[3]/div/div')))
@@ -68,29 +64,52 @@ for name in hotel_names:
         # Select the check-out date by clicking on the corresponding day element in the calendar
         checkout_day_element = wait.until(presence_of_element_located((By.XPATH, f'//*[@id="frm"]/div[1]/div[2]/div[2]/div/div/div[2]/table/tbody/tr/td[@data-date="{year}-{month}-{int(day)+1}"]')))
         checkout_day_element.click()
+#------------------------------------------
+# OCCUPANCY
 
-        #-----------------------------------------------------------------
-        """might have to add a search buttom pressed here"""
+        # Choose occupancy
 
-        #---------------------------------------------------------------
-        # SELECTING AND SCRAPING DATA
+        # Find and click on the occupancy selection box
+        occupancy_box = wait.until(presence_of_element_located((By.XPATH, '//*[@id="xp__guests__toggle"]')))
+        occupancy_box.click()
 
-        # Wait for the search results to appear
-        hotel_listings = wait.until(presence_of_element_located((By.XPATH, "//div[@id='hotellist_inner']/div")))
+        # Select the occupancy by clicking on the corresponding option element in the occupancy menu
+        occupancy_option = wait.until(presence_of_element_located((By.XPATH, f'//*[@id="frm"]/div[1]/div[4]/div[2]/div/div/div/div[1]/div[2]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div/div/div[1]/div/span[1]')))
+        occupancy_option.click()
+
+                # Find the occupancy dropdown element
+        occupancy_dropdown = wait.until(presence_of_element_located((By.ID, "xp__guests__toggle")))
+
+        # Click on the occupancy dropdown to expand it
+        occupancy_dropdown.click()
+
+        # Find the occupancy option for the desired number of guests
+        occupancy_option = wait.until(presence_of_element_located((By.XPATH, f"//select[@id='no_rooms']/option[@value='1']//following::option[@value='{occupancy}']")))
+        
+        # Select the occupancy option
+        occupancy_option.click()
+#------------------------------------------
+# SEARCH EXTRACT
+
+        # Find and click the search button
+        search_button = wait.until(presence_of_element_located((By.XPATH, "//button[@data-sb-id='main']")))
+        search_button.click()
+
+        # Wait for the search results to load
+        hotel_listings = wait.until(presence_of_element_located((By.ID, "hotellist_inner")))
 
         # Find the first hotel listing on the page
-        hotel_listing = hotel_listings.find_element_by_xpath("./*[contains(@class, 'sr_item')][1]")
+        hotel_listing = hotel_listings.find_element_by_xpath(".//div[@class='sr_item'][1]")
 
         # Extract the name and price of the hotel
-        hotel_name = hotel_listing.find_element_by_xpath(".//span[contains(@class, 'sr-hotel__name')]").text.strip()
-        hotel_price = hotel_listing.find_element_by_xpath(".//div[contains(@class, 'bui-price-display__value')]").text.strip()
+        hotel_name = hotel_listing.find_element_by_xpath(".//span[@class='sr-hotel__name']").text
+        hotel_price = hotel_listing.find_element_by_xpath(".//div[@class='bui-price-display__value prco-inline-block-maker-helper']").text
 
-        # Print the name, price and occupancy of the hotel
-        print(f'Name: {hotel_name} | Occupancy:{occupancy} | Price: {hotel_price}')
+        # Print the name, price, and occupancy of the hotel
+        print(f"Name: {hotel_name} | Occupancy: {occupancy} | Price: {hotel_price}")
 
-# Add the search results to the list
-all_results.append([name, occupancy, hotel_name, hotel_price])
-
+        # Add the search results to the list
+        all_results.append([name, occupancy, hotel_name, hotel_price])
 
 # Write all search results to a single file
 with open('search_results.txt', 'w') as f:
